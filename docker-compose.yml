@@ -1,0 +1,51 @@
+version: '3.6'
+services:
+  redis:
+    image: redis
+    container_name: redis-server
+    restart: always
+    logging:
+      driver: journald
+      options:
+        tag: "mirror-redis"
+    networks:
+      - mirror
+  registry:
+    image: registry:latest
+    container_name: registry
+    restart: always
+    ports:
+      - "127.0.0.1:5000:5000/tcp"
+    networks:
+      - mirror
+    volumes:
+      - registry-data:/var/lib/registry
+      - ./registry-config.yml:/etc/docker/registry/config.yml:ro
+    depends_on:
+      - redis
+    logging:
+      driver: journald
+      options:
+        tag: "mirror-registry"
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "443:8443/tcp"
+    volumes:
+        - ./nginx-conf.d:/etc/nginx/conf.d:ro
+    logging:
+      driver: journald
+      options:
+        tag: "mirror-nginx"
+    networks:
+      - mirror
+    depends_on:
+      - registry
+networks:
+  mirror:
+    external: false
+
+volumes:
+  registry-data:

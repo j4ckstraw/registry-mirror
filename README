@@ -1,0 +1,14 @@
+# Registry Mirror
+
+docker镜像加速。
+
+# generate ssl certifacation
+
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./nginx-conf.d/server.key -out ./nginx-conf.d/server.crt
+```
+# reference
+
+- nginx mirror config: https://docs.docker.com/registry/recipes/nginx/
+- how to see logs: https://docs.docker.com/config/containers/logging/journald/
+
